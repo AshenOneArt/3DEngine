@@ -42,7 +42,7 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	std::stringstream str;
-	const float dt = 1.0f / 60.0f;
+	const float dt = 1.0f / 120.0f;
 	if (wnd.kbd.KeyIsPressed('W'))
 	{
 		theta_x += dTheta * dt;
