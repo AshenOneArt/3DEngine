@@ -21,12 +21,13 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Mat2.h"
-
+#include "Matrix3.h"
+#include <sstream>
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	cube(1)
+	cube(0.5)
 {
 }
 
@@ -40,15 +41,55 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-
+	std::stringstream str;
+	const float dt = 1.0f / 60.0f;
+	if (wnd.kbd.KeyIsPressed('W'))
+	{
+		theta_x += dTheta * dt;
+		
+		str << theta_x << std::endl;
+		OutputDebugStringA(str.str().c_str());
+	}
+	if (wnd.kbd.KeyIsPressed('S'))
+	{
+		theta_x -= dTheta * dt;
+		str << theta_x << std::endl;
+		OutputDebugStringA(str.str().c_str());
+	}
+	if (wnd.kbd.KeyIsPressed('D'))
+	{
+		theta_y += dTheta * dt;
+		str << theta_y << std::endl;
+		OutputDebugStringA(str.str().c_str());
+	}
+	if (wnd.kbd.KeyIsPressed('A'))
+	{
+		theta_y -= dTheta * dt;
+		str << theta_y << std::endl;
+		OutputDebugStringA(str.str().c_str());
+	}
+	if (wnd.kbd.KeyIsPressed('Q'))
+	{
+		theta_z -= dTheta * dt;
+		str << theta_z << std::endl;
+		OutputDebugStringA(str.str().c_str());
+	}
+	if (wnd.kbd.KeyIsPressed('E'))
+	{
+		theta_z += dTheta * dt;
+		str << theta_z << std::endl;
+		OutputDebugStringA(str.str().c_str());
+	}
 }
 
 void Game::ComposeFrame()
 {
 	auto lines = cube.Get_VL_Buffer();
+	Matrix3 matrix = Matrix3::RotationX(theta_x) * Matrix3::RotationY(theta_y) * Matrix3::RotationZ(theta_z);
 	for (Vec3& i : lines.vertex)
 	{
-		i  += { 0.0f, 0.0f, 1.0f };
+		i *= matrix;
+		//i  += { 0.0f, 0.0f, 1.0f };
 		toScreen.Transfrom(i);
 	}
 	for (auto i = lines.vertexIndex.begin(); i< lines.vertexIndex.end(); i += 2)

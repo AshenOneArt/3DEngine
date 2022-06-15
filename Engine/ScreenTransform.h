@@ -15,6 +15,7 @@ public:
 		//and window's Y is down to up ,the coordinate system we want is up to down !
 		Campos.x =  (Campos.x * 0.5f + 0.5f)* xFactor;
 		Campos.y = (-Campos.y * 0.5f + 0.5f)* yFactor;
+		
 		return Campos;
 	}
 	Vec3 GetTransfrom(const Vec3& Campos)const

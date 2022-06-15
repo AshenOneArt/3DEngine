@@ -4,15 +4,15 @@
 #include "Vec3.h"
 
 template <typename T>
-class _Mat3
+class _Matrix3
 {
 public:
-	_Mat3& operator=(const _Mat3& rhs)
+	_Matrix3& operator=(const _Matrix3& rhs)
 	{
 		memcpy(elements, rhs.elements, sizeof(elements));
 		return *this;
 	}
-	_Mat3& operator*=(T rhs)
+	_Matrix3& operator*=(T rhs)
 	{
 		for (auto& row : elements)
 		{
@@ -23,14 +23,14 @@ public:
 		}
 		return *this;
 	}
-	_Mat3 operator*(T rhs) const
+	_Matrix3 operator*(T rhs) const
 	{
-		_Mat3 result = *this;
+		_Matrix3 result = *this;
 		return result *= rhs;
 	}
-	_Mat3 operator*(const _Mat3& rhs) const
+	_Matrix3 operator*(const _Matrix3& rhs) const
 	{
-		_Mat3 result;
+		_Matrix3 result;
 		for (size_t j = 0; j < 3; j++)
 		{
 			for (size_t k = 0; k < 3; k++)
@@ -45,7 +45,7 @@ public:
 		}
 		return result;
 	}
-	static _Mat3 Identity()
+	static _Matrix3 Identity()
 	{
 		return {
 			(T)1.0,(T)0.0,(T)0.0,
@@ -53,7 +53,7 @@ public:
 			(T)0.0,(T)0.0,(T)1.0
 		};
 	}
-	static _Mat3 Scaling(T factor)
+	static _Matrix3 Scaling(T factor)
 	{
 		return{
 			factor,(T)0.0,(T)0.0,
@@ -61,19 +61,50 @@ public:
 			(T)0.0,(T)0.0,factor
 		};
 	}
+	static _Matrix3 RotationZ(T theta)
+	{
+		const T sinTheta = sin(theta);
+		const T cosTheta = cos(theta);
+		return _Matrix3
+		{
+			cosTheta,-sinTheta,(T)0.0,
+			sinTheta,cosTheta,(T)0.0,
+			(T)0.0,(T)0.0,(T)1.0
+		};
+	}
+	static _Matrix3 RotationY(T theta)
+	{
+		const T sinTheta = sin(theta);
+		const T cosTheta = cos(theta);
+		return{
+			 cosTheta, (T)0.0,-sinTheta,
+			 (T)0.0,   (T)1.0, (T)0.0,
+			 sinTheta, (T)0.0, cosTheta
+		};
+	}
+	static _Matrix3 RotationX(T theta)
+	{
+		const T sinTheta = sin(theta);
+		const T cosTheta = cos(theta);
+		return{
+			 (T)1.0, (T)0.0, (T)0.0,
+			 (T)0.0, cosTheta, -sinTheta,
+			 (T)0.0, sinTheta, cosTheta
+		};
+	}
 public:
-	// [ row ][ col ]
+	// [ x ][ y ][ z ]
 	T elements[3][3];
 };
 
 template<typename T>
-_Vec3<T>& operator*=(_Vec3<T>& lhs, const _Mat3<T>& rhs)
+_Vec3<T>& operator*=(_Vec3<T>& lhs, const _Matrix3<T>& rhs)
 {
 	return lhs = lhs * rhs;
 }
 
 template<typename T>
-_Vec3<T> operator*(const _Vec3<T>& lhs, const _Mat3<T>& rhs)
+_Vec3<T> operator*(const _Vec3<T>& lhs, const _Matrix3<T>& rhs)
 {
 	return{
 		lhs.x * rhs.elements[0][0] + lhs.y * rhs.elements[1][0] + lhs.z * rhs.elements[2][0],
@@ -82,5 +113,5 @@ _Vec3<T> operator*(const _Vec3<T>& lhs, const _Mat3<T>& rhs)
 	};
 }
 
-typedef _Mat3<float> Mat3;
-typedef _Mat3<double> Mad3;
+typedef _Matrix3<float> Matrix3;
+typedef _Matrix3<double> dMatrix3;

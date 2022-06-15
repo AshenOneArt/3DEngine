@@ -26,6 +26,7 @@
 #include "ChiliMath.h"
 #include "Cube.h"
 #include "ScreenTransform.h"
+
 class Game
 {
 public:
@@ -44,8 +45,13 @@ private:
 	Graphics gfx;
 	/********************************/
 	/*  User Variables              */
-
+	
 	Cube cube;
 	ScreenTransform toScreen;
+
+	static constexpr float dTheta = PI;
+	float theta_x = 0.0f;
+	float theta_y = 0.0f;
+	float theta_z = 0.0f;
 	/********************************/
 };
