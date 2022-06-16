@@ -75,7 +75,7 @@
     <ClInclude Include="ScreenTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VertexLineStruct.h">
+    <ClInclude Include="VertexStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cube.h">

@@ -13,8 +13,8 @@ public:
 	{
 		//Campos(-1 ~ 1) => NDCpos(0 ~ 1) 
 		//and window's Y is down to up ,the coordinate system we want is up to down !
-		Campos.x =  (Campos.x * 0.5f + 0.5f)* xFactor;
-		Campos.y = (-Campos.y * 0.5f + 0.5f)* yFactor*(xFactor/ yFactor) - (xFactor- yFactor)/2.0;
+		Campos.x =  (Campos.x * 0.5f * 1 / Campos.z + 0.5f)* xFactor;
+		Campos.y = (-Campos.y * 0.5f * 1 / Campos.z + 0.5f)* yFactor*(xFactor/ yFactor) - (xFactor- yFactor)/2.0;
 		
 		return Campos;
 	}

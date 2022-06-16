@@ -7,3 +7,8 @@ struct VertexLineStruct
 	std::vector<Vec3> vertex;
 	std::vector<unsigned int> vertexIndex;
 };
+//struct VertexLineStruct
+//{
+//	std::vector<Vec3> vertex;
+//	std::vector<unsigned int> vertexIndex;
+//};

@@ -3,7 +3,7 @@
 #include "Vec3.h"
 #include <memory>
 #include <iostream>
-#include "VertexLineStruct.h"
+#include "VertexStruct.h"
 
 class Cube
 {

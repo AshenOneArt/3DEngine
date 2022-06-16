@@ -24,8 +24,10 @@
 #include "ChiliException.h"
 #include <assert.h>
 #include <string>
+#include <sstream>
 #include <array>
 #include <functional>
+#include <Windows.h>
 
 // Ignore the intellisense error "cannot open source file" for .shh files.
 // They will be created during the build sequence before the preprocessor runs.
@@ -378,6 +380,98 @@ void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
 		if( int( x2 ) > lastIntX )
 		{
 			PutPixel( int( x2 ),int( y2 ),c );
+		}
+	}
+}
+
+void Graphics::DrawTopTriangle(Vec2 t0, Vec2 t1, Vec2 t2, Color c)
+{
+	float slopeY0 = (t1.x - t0.x) / (t1.y - t0.y);
+	float slopeY1 = (t2.x - t0.x) / (t2.y - t0.y);
+
+	// calculate start and end scanlines
+	const int yStart = (int)ceil(t0.y - 0.5f);
+	const int yEnd = (int)ceil(t2.y - 0.5f); // the scanline AFTER the last line drawn
+
+
+	for (int y = yStart; y < yEnd; y++)
+	{
+		const float px0 = t0.x + (float(y) + 0.5f - t0.y) * slopeY0;
+		const float px1 = t0.x + (float(y) + 0.5f - t0.y) * slopeY1;
+
+		const int xStart = (int)ceil(px0 - 0.5f);
+		const int xEnd = (int)ceil(px1 - 0.5f);
+		for (int x = xStart; x < xEnd; x++)
+		{
+			this->PutPixel(x, y, c);
+		}
+	}
+}
+
+void Graphics::DrawDownTriangle(Vec2 t0, Vec2 t1, Vec2 t2, Color c)
+{	
+	float slopeY0 = (t2.x - t0.x) / (t2.y - t0.y);
+	float slopeY1 = (t2.x - t1.x) / (t2.y - t1.y);
+
+	const int yStart = (int)ceil(t0.y - 0.5f);
+	const int yEnd = (int)ceil(t2.y - 0.5f);
+	std::stringstream out;
+
+	for (int y = yStart; y < yEnd; y++)
+	{
+		const float px0 = t0.x + ((float)y + 0.5f - t0.y) * slopeY0;
+		const float px1 = t1.x + ((float)y + 0.5f - t0.y) * slopeY1;
+
+		const int xStart = (int)ceil(px0 - 0.5f);
+		const int xEnd = (int)ceil(px1 - 0.5f);
+		for (int x = xStart; x < xEnd; x++)
+		{
+			this->PutPixel(x, y, c);
+		}
+	}
+}
+
+void Graphics::DrawTriangle( Vec2 t0, Vec2 t1, Vec2 t2, Color c)
+{
+	Vec2* vp0 = &t0;
+	Vec2* vp1 = &t1;
+	Vec2* vp2 = &t2;
+
+	if (vp0->y > vp1->y)std::swap(vp0, vp1);
+	
+	if (vp1->y > vp2->y)std::swap(vp1, vp2);
+	if (vp0->y > vp1->y)std::swap(vp0, vp1);
+
+	std::stringstream out;
+	out << "0" << vp0->y << std::endl;
+	out << "1" << vp1->y << std::endl;
+	out << "2" << vp2->y << std::endl;
+	//OutputDebugStringA(out.str().c_str());
+	
+	if (vp0->y == vp1->y)
+	{
+		if (!vp1->x > vp0->x)std::swap(vp1, vp0);
+		DrawDownTriangle(*vp0, *vp1, *vp2, c);
+	}
+	else if (vp1->y == vp2->y)
+	{
+		if (!vp2->x > vp1->x)std::swap(vp1, vp2);
+		DrawTopTriangle(*vp0, *vp1, *vp2, c); 
+		//DrawFlatBottomTriangle(*vp0, *vp1, *vp2, c);
+	}
+	else
+	{
+		const float split = (vp1->y - vp0->y) / (vp2->y - vp0->y);
+		const Vec2 midVert = *vp0 + (*vp2 - *vp0) * split;
+		if (midVert.x > vp1->x)
+		{
+			DrawTopTriangle(*vp0, *vp1, midVert, c);
+			DrawDownTriangle(*vp1, midVert, *vp2, c);
+		}
+		else
+		{
+			DrawTopTriangle(*vp0, midVert, *vp1, c);
+			DrawDownTriangle(midVert, *vp1, *vp2, c);
 		}
 	}
 }

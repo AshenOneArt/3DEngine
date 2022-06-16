@@ -84,16 +84,17 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	auto lines = cube.Get_VL_Buffer();
+	/*auto lines = cube.Get_VL_Buffer();
 	Matrix3 matrix = Matrix3::RotationX(theta_x) * Matrix3::RotationY(theta_y) * Matrix3::RotationZ(theta_z);
 	for (Vec3& i : lines.vertex)
 	{
 		i *= matrix;
-		//i  += { 0.0f, 0.0f, 1.0f };
+		i  += { 0.0f, 0.0f, 1.0f };
 		toScreen.Transfrom(i);
 	}
 	for (auto i = lines.vertexIndex.begin(); i< lines.vertexIndex.end(); i += 2)
 	{
 		gfx.DrawLine(lines.vertex[*i], lines.vertex[*std::next(i)], Colors::White);
-	}
+	}*/
+	gfx.DrawTriangle(Vec2(10, 50), Vec2(40, 80), Vec2(25, 0), Colors::White);
 }
