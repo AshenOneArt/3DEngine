@@ -450,12 +450,12 @@ void Graphics::DrawTriangle( Vec2 t0, Vec2 t1, Vec2 t2, Color c)
 	
 	if (vp0->y == vp1->y)
 	{
-		if (!vp1->x > vp0->x)std::swap(vp1, vp0);
+		if (!(vp1->x > vp0->x))std::swap(vp1, vp0);
 		DrawDownTriangle(*vp0, *vp1, *vp2, c);
 	}
 	else if (vp1->y == vp2->y)
 	{
-		if (!vp2->x > vp1->x)std::swap(vp1, vp2);
+		if (!(vp2->x > vp1->x))std::swap(vp1, vp2);
 		DrawTopTriangle(*vp0, *vp1, *vp2, c); 
 		//DrawFlatBottomTriangle(*vp0, *vp1, *vp2, c);
 	}

@@ -84,17 +84,55 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	/*auto lines = cube.Get_VL_Buffer();
-	Matrix3 matrix = Matrix3::RotationX(theta_x) * Matrix3::RotationY(theta_y) * Matrix3::RotationZ(theta_z);
-	for (Vec3& i : lines.vertex)
+	std::vector<Color> col =
+	{
+		Colors::Blue,
+		Colors::Cyan,
+		Colors::Gray,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Magenta,
+		Colors::Red,
+		Colors::White,
+		Colors::Yellow,
+		Colors::Blue,
+		Colors::Cyan,
+		Colors::Gray
+	};
+	auto ver = cube.Get_VStruct_Buffer();
+	
+	Matrix3 matrix = Matrix3::RotationX(theta_x) * Matrix3::RotationY(theta_y) * Matrix3::RotationZ(theta_z);	
+	for (Vec3& i : ver.vertex)
 	{
 		i *= matrix;
-		i  += { 0.0f, 0.0f, 1.0f };
+		i  += { 0.0f, 0.0f, 1.0f };		
+	}
+
+	for (size_t i = 0; i < ver.faceIndex.size() / 3; i++)
+	{
+		Vec3 vec3_0 = ver.vertex[ver.faceIndex[i * 3]];
+		Vec3 vec3_1 = ver.vertex[ver.faceIndex[i * 3 + 1]];
+		Vec3 vec3_2 = ver.vertex[ver.faceIndex[i * 3 + 2]];
+		ver.normalDir[i] = ((vec3_1 - vec3_0).Cross((vec3_2 - vec3_0)));
+		ver.cullBack[i] = ver.normalDir[i] * vec3_0 <= 0.0f;
+	}
+
+	for (Vec3& i : ver.vertex)
+	{
 		toScreen.Transfrom(i);
 	}
-	for (auto i = lines.vertexIndex.begin(); i< lines.vertexIndex.end(); i += 2)
+	for (auto i = ver.faceIndex.begin(); i< ver.faceIndex.end(); i += 3)
 	{
-		gfx.DrawLine(lines.vertex[*i], lines.vertex[*std::next(i)], Colors::White);
-	}*/
-	gfx.DrawTriangle(Vec2(10, 50), Vec2(40, 80), Vec2(25, 0), Colors::White);
+		int index = std::distance(ver.faceIndex.begin(), i);
+		if (ver.cullBack[index/3])
+		{
+			gfx.DrawTriangle(ver.vertex[*i], ver.vertex[*(i+1)], ver.vertex[*(i + 2)], col[index/3]);
+		}
+
+		//float a =  ver.normalDir[index / 3] * ver.vertex[ver.faceIndex[index]].GetNormalized() ;
+		
+	}
+
+	//gfx.DrawTriangle(Vec2(theta_z, 250), Vec2(200, 250), Vec2(50, 50), Colors::White);
+	//gfx.DrawTriangle(Vec2(50, 250), Vec2(200, 250), Vec2(50, 50), Colors::White);
 }

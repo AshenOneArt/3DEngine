@@ -63,6 +63,15 @@ public:
 		norm.Normalize();
 		return norm;
 	}
+	_Vec3   Cross(const _Vec3& input)const
+	{
+		return _Vec3
+		(
+			y * input.z - input.y * z,
+			z * input.x - input.z * x,
+			x * input.y - input.x * y
+		);
+	}
 	_Vec3	operator-() const
 	{
 		return _Vec3(-x, -y, -z);
