@@ -113,8 +113,8 @@ void Game::ComposeFrame()
 		Vec3 vec3_0 = ver.vertex[ver.faceIndex[i * 3]];
 		Vec3 vec3_1 = ver.vertex[ver.faceIndex[i * 3 + 1]];
 		Vec3 vec3_2 = ver.vertex[ver.faceIndex[i * 3 + 2]];
-		ver.normalDir[i] = ((vec3_1 - vec3_0).Cross((vec3_2 - vec3_0)));
-		ver.cullBack[i] = ver.normalDir[i] * vec3_0 <= 0.0f;
+		ver.normalDir[i] = ((vec3_1 - vec3_0).Cross((vec3_2 - vec3_0))).GetNormalized();
+		ver.cullBack[i] = ver.normalDir[i] * vec3_0.GetNormalized() <= 0.0f;
 	}
 
 	for (Vec3& i : ver.vertex)
@@ -127,12 +127,6 @@ void Game::ComposeFrame()
 		if (ver.cullBack[index/3])
 		{
 			gfx.DrawTriangle(ver.vertex[*i], ver.vertex[*(i+1)], ver.vertex[*(i + 2)], col[index/3]);
-		}
-
-		//float a =  ver.normalDir[index / 3] * ver.vertex[ver.faceIndex[index]].GetNormalized() ;
-		
+		}		
 	}
-
-	//gfx.DrawTriangle(Vec2(theta_z, 250), Vec2(200, 250), Vec2(50, 50), Colors::White);
-	//gfx.DrawTriangle(Vec2(50, 250), Vec2(200, 250), Vec2(50, 50), Colors::White);
 }
