@@ -48,6 +48,7 @@ private:
 	
 	Cube cube;
 	ScreenTransform toScreen;
+	Surface sbTex = Surface::FromFile(L"Images\\sauron-bhole-100x100.png");
 
 	static constexpr float dTheta = PI;
 	float theta_x = 0.0f;

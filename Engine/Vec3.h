@@ -131,6 +131,10 @@ public:
 	{
 		return _Vec3(*this) /= rhs;
 	}
+	_Vec3	InterpolateTo(const _Vec3& dest, T alpha) const
+	{
+		return *this + (dest - *this) * alpha;
+	}
 	bool	operator==(const _Vec3& rhs) const
 	{
 		return x == rhs.x && y == rhs.y && rhs.z = z;

@@ -99,34 +99,40 @@ void Game::ComposeFrame()
 		Colors::Cyan,
 		Colors::Gray
 	};
-	auto ver = cube.Get_VStruct_Buffer();
-	
+	auto ver_Vstruct = cube.Get_VStruct_Buffer();
+	auto ver_VTstruct = cube.Get_VTStruct_Buffer();
 	Matrix3 matrix = Matrix3::RotationX(theta_x) * Matrix3::RotationY(theta_y) * Matrix3::RotationZ(theta_z);	
-	for (Vec3& i : ver.vertex)
+	for (auto& i : ver_VTstruct.vertex)
 	{
-		i *= matrix;
-		i  += { 0.0f, 0.0f, 1.0f };		
+		i.pos *= matrix;
+		i.pos += { 0.0f, 0.0f, 1.0f };
 	}
 
-	for (size_t i = 0; i < ver.faceIndex.size() / 3; i++)
+	for (size_t i = 0; i < ver_VTstruct.faceIndex.size() / 3; i++)
 	{
-		Vec3 vec3_0 = ver.vertex[ver.faceIndex[i * 3]];
-		Vec3 vec3_1 = ver.vertex[ver.faceIndex[i * 3 + 1]];
-		Vec3 vec3_2 = ver.vertex[ver.faceIndex[i * 3 + 2]];
-		ver.normalDir[i] = ((vec3_1 - vec3_0).Cross((vec3_2 - vec3_0))).GetNormalized();
-		ver.cullBack[i] = ver.normalDir[i] * vec3_0.GetNormalized() <= 0.0f;
+		Vec3 vec3_0 = ver_VTstruct.vertex[ver_VTstruct.faceIndex[i * 3]].pos;
+		Vec3 vec3_1 = ver_VTstruct.vertex[ver_VTstruct.faceIndex[i * 3 + 1]].pos;
+		Vec3 vec3_2 = ver_VTstruct.vertex[ver_VTstruct.faceIndex[i * 3 + 2]].pos;
+		ver_VTstruct.normalDir[i] = ((vec3_1 - vec3_0).Cross((vec3_2 - vec3_0))).GetNormalized();
+		ver_VTstruct.cullBack[i] = ver_VTstruct.normalDir[i] * vec3_0.GetNormalized() <= 0.0f;
 	}
 
-	for (Vec3& i : ver.vertex)
+	for (auto& i : ver_VTstruct.vertex)
 	{
-		toScreen.Transfrom(i);
+		toScreen.Transfrom(i.pos);
 	}
-	for (auto i = ver.faceIndex.begin(); i< ver.faceIndex.end(); i += 3)
+	for (auto i = ver_VTstruct.faceIndex.begin(); i< ver_VTstruct.faceIndex.end(); i += 3)
 	{
-		int index = std::distance(ver.faceIndex.begin(), i);
-		if (ver.cullBack[index/3])
+		int index = std::distance(ver_VTstruct.faceIndex.begin(), i);
+		if (ver_VTstruct.cullBack[index/3])
 		{
-			gfx.DrawTriangle(ver.vertex[*i], ver.vertex[*(i+1)], ver.vertex[*(i + 2)], col[index/3]);
+			gfx.DrawTriangle(ver_VTstruct.vertex[*i].pos, ver_VTstruct.vertex[*(i + 1)].pos, ver_VTstruct.vertex[*(i + 2)].pos, col[index / 3]);
+			//gfx.DrawTriangleTex(ver_VTstruct.vertex[*i], ver_VTstruct.vertex[*(i + 1)], ver_VTstruct.vertex[*(i + 2)], sbTex);
 		}		
+		
 	}
+	/*for (auto i = ver_Vstruct.lineIndex.begin(); i < ver_Vstruct.lineIndex.end(); i += 2)
+	{
+		gfx.DrawLine(ver_Vstruct.vertex[*i], ver_Vstruct.vertex[*(i + 1)], Colors::White);
+	}*/
 }
